@@ -26,7 +26,6 @@ class SimpleTokenizerV2:
         preprocessed = re.split(r'([,.?"()\']|--|\s)', text)
         preprocessed = [item.strip() for item in preprocessed if item.strip()]
         preprocessed = [item for item in self.str_to_int else "<|unk|>" for item in preprocessed]
-
         ids = [self.str_to_int[s] for s in preprocessed]
         return ids
     
