@@ -21,7 +21,7 @@ class SelfAttention_v1(nn.Module):
     
 
 class SelfAttention_v2(nn.Module):
-    def __init__(self, d_in, d_out, qkv_bias=False):
+    def __init__(self, d_in, d_out):
         super().__init__()
         self.W_query = nn.Linear(d_in, d_out, bias=qkv_bias)
         self.W_key = nn.Linear(d_in, d_out, bias=qkv_bias)
