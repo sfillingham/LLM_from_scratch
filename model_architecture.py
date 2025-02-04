@@ -98,8 +98,8 @@ class TransformerBlock(nn.Module):
             qkv_bias=cfg['qkv_bias']
         )
         self.ff = FeedForward(cfg)
-        self.norm1 = LayerNorm(cfg)
-        self.norm2 = LayerNorm(cfg)
+        self.norm1 = LayerNorm(cfg['emb_dim'])
+        self.norm2 = LayerNorm(cfg['emb_dim'])
         self.drop_shortcut = nn.Dropout(cfg['drop_rate'])
 
     def forward(self, x):
