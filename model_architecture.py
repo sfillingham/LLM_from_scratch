@@ -1,3 +1,23 @@
+"""
+Example configuration dictionary
+This is what the model and various classes will need as input
+In the code below this is the "cfg" parameter
+
+GPT_CONFIG_124M = {
+    'vocab_size': 50257,
+    'context_length': 1024,
+    'emb_dim': 768,
+    'n_heads': 12,
+    'n_layers': 12,
+    'drop_rate_emb': 0.1,
+    'drop_rate_shortcut': 0.1,
+    'drop_rate_attn': 0.1,
+    'qkv_bias': False,
+}
+
+"""
+
+
 import torch
 import torch.nn as nn
 
@@ -9,7 +29,7 @@ class DummyGPTModel(nn.Module):
         super().__init__()
         self.tok_emb = nn.Embedding(cfg['vocab_size'], cfg['emb_dim'])
         self.pos_emb = nn.Embedding(cfg['context_length'], cfg['emb_dim'])
-        self.drop_emb = nn.Dropout(cfg['drop_rate'])
+        self.drop_emb = nn.Dropout(cfg['drop_rate_emb'])
         self.trf_blocks = nn.Sequential(
             *[DummyTransformerBlock(cfg) for _ in range(cfg['n_layers'])]
         )
@@ -94,13 +114,13 @@ class TransformerBlock(nn.Module):
             d_out=cfg['emb_dim'],
             context_length=cfg['context_length'],
             num_heads=cfg['n_heads'],
-            dropout=cfg['drop_rate'],
+            dropout=cfg['drop_rate_attn'],
             qkv_bias=cfg['qkv_bias']
         )
         self.ff = FeedForward(cfg)
         self.norm1 = LayerNorm(cfg['emb_dim'])
         self.norm2 = LayerNorm(cfg['emb_dim'])
-        self.drop_shortcut = nn.Dropout(cfg['drop_rate'])
+        self.drop_shortcut = nn.Dropout(cfg['drop_rate_shortcut'])
 
     def forward(self, x):
         shortcut = x
@@ -123,7 +143,7 @@ class GPTModel(nn.Module):
         super().__init__()
         self.tok_emb = nn.Embedding(cfg['vocab_size'], cfg['emb_dim'])
         self.pos_emb = nn.Embedding(cfg['context_length'], cfg['emb_dim'])
-        self.drop_emb = nn.Dropout(cfg['drop_rate'])
+        self.drop_emb = nn.Dropout(cfg['drop_rate_emb'])
         self.trf_blocks = nn.Sequential(
             *[TransformerBlock(cfg) for _ in range(cfg['n_layers'])]
         )
