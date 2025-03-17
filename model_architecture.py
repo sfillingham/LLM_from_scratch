@@ -149,6 +149,37 @@ class TransformerBlock(nn.Module):
 
         return x
     
+class TransformerBlock_DyT(nn.Module):
+    def __init__(self, cfg):
+        super().__init__()
+        self.att = MultiHeadAttention(
+            d_in=cfg['emb_dim'],
+            d_out=cfg['emb_dim'],
+            context_length=cfg['context_length'],
+            num_heads=cfg['n_heads'],
+            dropout=cfg['drop_rate_attn'],
+            qkv_bias=cfg['qkv_bias']
+        )
+        self.ff = FeedForward(cfg)
+        self.dyt1 = DyT(cfg['emb_dim'])
+        self.dyt2 = DyT(cfg['emb_dim'])
+        self.drop_shortcut = nn.Dropout(cfg['drop_rate_shortcut'])
+
+    def forward(self, x):
+        shortcut = x
+        x = self.dyt1(x)
+        x = self.att(x)
+        x = self.drop_shortcut(x)
+        x = x + shortcut
+
+        shortcut = x
+        x = self.dyt2(x)
+        x = self.ff(x)
+        x = self.drop_shortcut(x)
+        x = x + shortcut
+
+        return x
+    
 
 class GPTModel(nn.Module):
     def __init__(self, cfg):
