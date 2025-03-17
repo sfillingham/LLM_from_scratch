@@ -83,6 +83,18 @@ class LayerNorm(nn.Module):
         return self.scale * norm_x + self.shift
     
 
+class DyT(nn.Module):
+    def __init__(self, emb_dim, alpha_init_value=0.5):
+        super().__init__()
+        self.alpha = nn.Parameter(torch.ones(1) * alpha_init_value)
+        self.weight = nn.Parameter(torch.ones(emb_dim))
+        self.bias = nn.Parameter(torch.zeros(emb_dim))
+    
+    def forward(self, x):
+        x = torch.tanh(self.alpha * x)
+        return x * self.weight + self.bias
+    
+
 class GELU(nn.Module):
     def __init__(self):
         super().__init__()
